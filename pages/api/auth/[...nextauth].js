@@ -11,5 +11,7 @@ export default NextAuth({
   ],
   pages:{
     signIn:"/auth/signin"
-  }
+  },
+  secret:process.env.JWT_SECRET
+
 })

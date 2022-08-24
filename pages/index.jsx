@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Image from 'next/image';
 import Header from '../components/Header';
 import Feed from '../components/Feed';
 import Modal from '../components/Modal';
@@ -13,7 +12,7 @@ const {data:session} = useSession();
 
   return (
     <div>
-    <div className='bg-gray-100'>
+    <div className='bg-gray-100 min-w-[400px]'>
       <Head>
         <title>Instagram clone</title>
         <link rel="icon" href="/favicon.ico" />

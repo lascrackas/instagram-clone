@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState ,useEffect} from 'react';
 import logo from '../public/img/logoinstagram.png';
 import Image from 'next/image';
 import {HomeIcon} from '@heroicons/react/solid';
@@ -8,13 +8,20 @@ import { useRecoilState } from 'recoil';
 import {modalState} from '../atoms/ModalAtom';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-
+import { Transition } from '@headlessui/react';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 const Header = () => {
 
     const [open,setOpen] = useRecoilState(modalState);
+    const [openMenu,setOpenMenu] = useState(false);
     const {data:session} = useSession()
     const router = useRouter();
+
+    useEffect(()=> {
+        document.addEventListener('scroll',()=> setOpenMenu(false));
+    },[]);
+
 
 
   return (
@@ -38,18 +45,49 @@ const Header = () => {
 
         <div className='flex items-center space-x-4'>
             <HomeIcon className='text-black  w-7 cursor-pointer' />
-            <PaperAirplaneIcon  className='text-black  w-7 rotate-45 cursor-pointer'  />
+            <PaperAirplaneIcon  onClick={() => router.push('/direct/inbox')}   className='text-black  w-7 rotate-45 cursor-pointer'  />
             <PlusCircleIcon onClick={()=> setOpen(true)} className='text-black  w-7 cursor-pointer'  />
             <GlobeIcon className='text-black  w-7 cursor-pointer'  />
             <HeartIcon  className='text-black  w-7 cursor-pointer'/>
-            <span onClick={()=> signOut({callbackUrl:"/auth/signin"})} className='cursor-pointer'>
+            <div>
+        <div>
 
-            <Image className=' rounded-full object-cover' src={session?.user.image} width={32} height={32} />
+    <div onClick={(()=> setOpenMenu((current)=>!current))} className="outline-none mt-2 " id="menu-button" aria-expanded="true" aria-haspopup="true">
+            
+    <span  className='cursor-pointer'>
+            <Image className=' rounded-full object-cover' src={session?.user.image} width={30} height={30} />
             </span>
+    </div>
+  </div>
+    <ClickAwayListener onClickAway={()=> setOpenMenu(false)}>
+        <Transition
+        show={openMenu}
+        enter="transition-opacity duration-200"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="transition-opacity duration-200"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+      >
+    
+            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabIndex="-1">
+                <div className="py-1" role="none">
+                <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-0">Profil</a>
+                <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-0">Enregistré</a>
+                <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-1">Parametres</a>
+                <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-2">Changer de compte</a>
+                <form method="POST" action="#" role="none">
+                    <button  onClick={()=> signOut({callbackUrl:"/auth/signin"})}   type="submit" className="text-gray-700 block w-full text-left px-4 py-2 text-sm" role="menuitem" tabIndex="-1" id="menu-item-3">Deconnexion</button>
+                </form>
+                </div>
+            </div>
+      </Transition>
+    </ClickAwayListener>
         </div>
+    </div>
+    </div>
+    </div>
 
-    </div>
-    </div>
   )
 }
 

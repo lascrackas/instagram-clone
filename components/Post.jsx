@@ -23,12 +23,14 @@ const Post = ({id, username, userImg, image, caption}) => {
 
   const postComment = async (e) => {
     e.preventDefault();
-    setComment("");
+    if(comment.length===0)return;
     const docRef = await addDoc(collection(db, "posts",id,'comment'), {
       username: session.user.name,
       comment:comment,
       timestamp:serverTimestamp()
     });
+    setComment("");
+
   }
 
   return (
@@ -40,7 +42,7 @@ const Post = ({id, username, userImg, image, caption}) => {
       <DotsHorizontalIcon className='w-4' />
     </div>
 
-    <div>
+    <div> 
       <Image  src={image} objectFit="cover" width={600} height={600} />
     </div>
 
